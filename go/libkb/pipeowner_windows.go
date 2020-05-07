@@ -111,14 +111,14 @@ func IsPipeowner(log logger.Logger, name string) (owner PipeOwnerInfo, err error
 	}
 	owner.IsOwner = windows.EqualSid(pipeSid, userSid)
 	owner.PipeAccount.Account, owner.PipeAccount.Domain, owner.PipeAccount.Type, owner.PipeAccount.Err = pipeSid.LookupAccount("")
-	owner.PipeAccount.SID, err = pipeSid.String()
-	if err != nil {
-		log.Errorf("error getting owner SID: %s", err.Error())
+	owner.PipeAccount.SID = pipeSid.String()
+	if owner.PipeAccount.SID == "" {
+		log.Errorf("error getting owner SID")
 	}
 	owner.UserAccount.Account, owner.UserAccount.Domain, owner.UserAccount.Type, owner.UserAccount.Err = userSid.LookupAccount("")
-	owner.UserAccount.SID, err = userSid.String()
-	if err != nil {
-		log.Errorf("error getting user SID: %s", err.Error())
+	owner.UserAccount.SID = userSid.String()
+	if owner.UserAccount.SID == "" {
+		log.Errorf("error getting user SID")
 	}
 
 	if !owner.IsOwner {
